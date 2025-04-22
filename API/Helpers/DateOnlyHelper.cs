@@ -4,9 +4,9 @@ namespace API.Helpers
 {
     public static class DateOnlyHelper
     {
-        public static DateOnly StringToDateOnly(string date)
+        public static DateOnly StringToDateOnly(string dateOnly)
         {
-            var parsedDateOnly = DateOnly.Parse(date, CultureInfo.InvariantCulture);
+            var parsedDateOnly = DateOnly.Parse(dateOnly, CultureInfo.InvariantCulture);
 
             return parsedDateOnly;
         }
