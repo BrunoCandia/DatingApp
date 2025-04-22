@@ -22,6 +22,8 @@ namespace API.Controllers
         [HttpGet]   //// http://localhost:5000/api/user
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
+            userParams.CurrentUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var users = await _userRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(users);

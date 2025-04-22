@@ -1,4 +1,33 @@
 <div class="row">
+  <div class="text-center mt-3">
+    <h2>Your matches: {{ paginatedResult.pagination?.totalItems }}</h2>
+  </div>
+
+  <div class="container mt-3">
+    <form #form="ngForm" (ngSubmit)="loadMembers()" class="d-flex mb-3">
+      <div class="d-flex mx-2">        
+        <label class="col-form-label">Age from:</label>
+          <input type="number" class="form-control ms-1" style="width: 70px;" [(ngModel)]="userParams.minAge" name="minAge" min="18" max="100" required />
+      </div>
+      <div class="d-flex mx-2">        
+        <label class="col-form-label">Age to:</label>
+          <input type="number" class="form-control ms-1" style="width: 70px;" [(ngModel)]="userParams.maxAge" name="maxAge" min="18" max="100" required />
+      </div>
+      <div class="d-flex mx-2">        
+        <label class="col-form-label">Show:</label>
+          <select class="form-select ms-1" [(ngModel)]="userParams.gender" name="gender">
+            @for (gender of genderList; track gender.value) {
+              <option [value]="gender.value">
+                {{gender.display}}
+              </option>
+            }
+          </select>
+      </div>
+      <button type="submit" class="btn btn-primary ms-1">Apply filters</button>
+      <button type="button" class="btn btn-info ms-1" (click)="resetFilters()">Reset filters</button>
+    </form>
+  </div>
+
   @for (member of paginatedResult.items; track member.userId) {
   <div class="col-2">
     <app-member-card [member]="member"></app-member-card>
@@ -7,21 +36,20 @@
 </div>
 
 @if (paginatedResult.pagination) {
-  <div class="d-flex justify-content-center">
-    <pagination
-      [boundaryLinks]="true"
-      [totalItems]="paginatedResult.pagination.totalItems"
-      [itemsPerPage]="paginatedResult.pagination.itemsPerPage"
-      (pageChanged)="pageChanged($event)"
-      [maxSize]="10"
-
-      previousText="&lsaquo;"
-      nextText="&rsaquo;"
-      firstText="&laquo;"
-      lastText="&raquo;"
-    >
-    </pagination>
-  </div>
+<div class="d-flex justify-content-center">
+  <pagination
+    [boundaryLinks]="true"
+    [totalItems]="paginatedResult.pagination.totalItems"
+    [itemsPerPage]="paginatedResult.pagination.itemsPerPage"
+    (pageChanged)="pageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;"
+  >
+  </pagination>
+</div>
 }
 
 <!-- <div class="row">
