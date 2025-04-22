@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../services/account.service';
 import { TextInputComponent } from "../forms/text-input/text-input.component";
 import { DatePickerComponent } from "../forms/date-picker/date-picker.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -15,18 +16,19 @@ import { DatePickerComponent } from "../forms/date-picker/date-picker.component"
 })
 export class RegisterComponent implements OnInit {
   // usersFromHomeComponent = input.required<any>();
-  cancelRegister = output<boolean>();
-
-  model: any = {};
+  cancelRegister = output<boolean>();  
 
   maxDate: Date = new Date();
+
+  validationErrors: string[] | undefined;
 
   registerForm: FormGroup = new FormGroup({});
 
   constructor(
     private accountService: AccountService,
     private toastrService: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -67,15 +69,19 @@ matchValues(matchTo: string) {
   }
 
   register() {
-    console.log(this.model);
-    this.accountService.register(this.model).subscribe({
+    const dob = this.getDateOnly(this.registerForm.get('dateOfBirth')?.value);
+    this.registerForm.patchValue({dateOfBirth: dob});
+
+    this.accountService.register(this.registerForm.value).subscribe({
       next: (response) => {
         console.log(response);
-        this.cancel();
+        this.router.navigateByUrl('/members');
+        this.toastrService.success('Registration successful!');
       },
       error: (error) => {
         console.log(error);
         this.toastrService.error(error.error, 'Register Failed');
+        this.validationErrors = error;
       },
     });
   }
@@ -84,4 +90,9 @@ matchValues(matchTo: string) {
     console.log('cancelled');
     this.cancelRegister.emit(false);
   }
+
+  private getDateOnly(dob: string | undefined) {
+    if (!dob) return;
+    return new Date(dob).toISOString().slice(0, 10);
+  } 
 }

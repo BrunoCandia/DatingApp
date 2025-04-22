@@ -1,5 +1,4 @@
-﻿using API.Extensions;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -45,10 +44,10 @@ namespace API.Entities
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
         // TODO: How to get the age of the user and make it work wiht EF Core?
-        public int GetAge()
-        {
-            return DateOfBirth.CalculateAge();
-        }
+        ////public int GetAge()
+        ////{
+        ////    return DateOfBirth.CalculateAge();
+        ////}
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>

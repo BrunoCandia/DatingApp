@@ -1,5 +1,6 @@
 ﻿using API.DTO;
 using API.Entities;
+using API.Helpers;
 using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace API.Controllers
             var user = new User
             {
                 UserName = registerDto.UserName.ToLower(),
-                DateOfBirth = registerDto.DateOfBirth,
+                DateOfBirth = DateOnlyHelper.StringToDateOnly(registerDto.DateOfBirth),
                 KnownAs = registerDto.KnownAs,
                 Gender = registerDto.Gender,
                 City = registerDto.City,

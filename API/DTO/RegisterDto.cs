@@ -9,7 +9,7 @@ namespace API.DTO
         [StringLength(8, MinimumLength = 4)]
         public required string Password { get; set; }
 
-        public DateOnly DateOfBirth { get; set; }
+        public required string DateOfBirth { get; set; }
 
         public required string KnownAs { get; set; }
 
