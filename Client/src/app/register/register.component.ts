@@ -76,11 +76,11 @@ matchValues(matchTo: string) {
       next: (response) => {
         console.log(response);
         this.router.navigateByUrl('/members');
-        this.toastrService.success('Registration successful!');
+        this.toastrService.success('Registration successful!');  //This is not needed as we are navigating to members page
       },
       error: (error) => {
         console.log(error);
-        this.toastrService.error(error.error, 'Register Failed');
+        this.toastrService.error(error, 'Register Failed'); //This is not needed
         this.validationErrors = error;
       },
     });

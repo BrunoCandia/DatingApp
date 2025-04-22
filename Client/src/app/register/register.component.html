@@ -124,7 +124,7 @@
   }
 
   <div class="form-group text-center">
-    <button type="submit" class="btn btn-success me-2">Register</button>
+    <button [disabled]="!registerForm.valid" type="submit" class="btn btn-success me-2">Register</button>
     <button type="button" class="btn btn-default me-2" (click)="cancel()">
       Cancel
     </button>
