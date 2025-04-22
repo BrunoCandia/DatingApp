@@ -150,6 +150,12 @@ namespace API.Repositories
 
             query = query.Where(x => x.DateOfBirth >= minDateOfBirth && x.DateOfBirth <= maxDateOfBirth);
 
+            query = userParams.OrderBy switch
+            {
+                "createdAt" => query.OrderByDescending(x => x.CreatedAt),
+                _ => query.OrderByDescending(x => x.LastActive)
+            };
+
             return await PagedList<MemberDto>.CreateAsync(
                 query.Select(x => new MemberDto
                 {

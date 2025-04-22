@@ -6,6 +6,7 @@ export class UserParams {
     maxAge: number;
     pageNumber: number;
     pageSize: number;
+    orderBy: string;
     
     constructor(user: User | null) {
         this.gender = user?.gender === 'female' ? 'male': 'female';
@@ -13,5 +14,6 @@ export class UserParams {
         this.maxAge = 99;
         this.pageNumber = 1;
         this.pageSize = 5;
+        this.orderBy = 'lastActive';
     }
 }
