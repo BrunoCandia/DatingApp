@@ -1,21 +1,33 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../models/member';
 import { AccountService } from './account.service';
+import { PaginatedResult } from '../models/paginatedResult';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
 
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl;  
 
   constructor(private httpClient: HttpClient, private accountService: AccountService) {}
 
-  getMembers() {
-    return this.httpClient.get<Member[]>(this.baseUrl + 'user');
+  getMembers(pageNumber?: number, pageSize?: number) {
+    let params = new HttpParams();
+
+    if (pageNumber && pageSize) {
+      params = params.append('pageNumber', pageNumber.toString());
+      params = params.append('pageSize', pageSize.toString());
+    }
+
+    return this.httpClient.get<PaginatedResult<Member[]>>(this.baseUrl + 'user', { observe: 'response', params });
   }
+
+  // getMembers() {
+  //   return this.httpClient.get<Member[]>(this.baseUrl + 'user');
+  // }
 
   getMember(userName: string) {
     return this.httpClient.get<Member>(this.baseUrl + 'user/' + userName);

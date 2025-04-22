@@ -1,7 +1,33 @@
 <div class="row">
-  @for (member of members; track member.userId) {
+  @for (member of paginatedResult.items; track member.userId) {
   <div class="col-2">
     <app-member-card [member]="member"></app-member-card>
   </div>
   }
 </div>
+
+@if (paginatedResult.pagination) {
+  <div class="d-flex justify-content-center">
+    <pagination
+      [boundaryLinks]="true"
+      [totalItems]="paginatedResult.pagination.totalItems"
+      [itemsPerPage]="paginatedResult.pagination.itemsPerPage"
+      (pageChanged)="pageChanged($event)"
+      [maxSize]="10"
+
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+}
+
+<!-- <div class="row">
+  @for (member of members; track member.userId) {
+  <div class="col-2">
+    <app-member-card [member]="member"></app-member-card>
+  </div>
+  }
+</div> -->

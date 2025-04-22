@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -102,6 +103,38 @@ namespace API.Repositories
                         IsMain = p.IsMain
                     }).ToList()
                 }).ToListAsync();
+        }
+
+        public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
+        {
+            var query = _context.Users
+                .Include(x => x.Photos)
+                .Select(x => new MemberDto
+                {
+                    UserId = x.Id,
+                    UserName = x.UserName,
+                    KnownAs = x.KnownAs,
+                    CreatedAt = x.CreatedAt,
+                    LastActive = x.LastActive,
+                    Gender = x.Gender,
+                    Introduction = x.Introduction,
+                    Interests = x.Interests,
+                    LookingFor = x.LookingFor,
+                    City = x.City,
+                    Country = x.Country,
+                    ////Age = x.GetAge(),
+                    ////PhotoUrl = x.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                    ////PhotoUrl = x.Photos.FirstOrDefault(p => p.IsMain) != null ? x.Photos.FirstOrDefault(p => p.IsMain)!.Url : null, // Alternative 1
+                    PhotoUrl = x.Photos.Where(p => p.IsMain).Select(p => p.Url).FirstOrDefault(), // Alternative 2
+                    Photos = x.Photos.Select(p => new PhotoDto
+                    {
+                        PhotoId = p.PhotoId,
+                        Url = p.Url,
+                        IsMain = p.IsMain
+                    }).ToList()
+                });
+
+            return await PagedList<MemberDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
         }
     }
 }

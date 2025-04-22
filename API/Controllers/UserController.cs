@@ -1,4 +1,6 @@
 ﻿using API.DTO;
+using API.Extensions;
+using API.Helpers;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -18,17 +20,27 @@ namespace API.Controllers
         }
 
         [HttpGet]   //// http://localhost:5000/api/user
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            var users = await _userRepository.GetMembersAsync();
+            var users = await _userRepository.GetMembersAsync(userParams);
 
-            if (users is null || !users.Any())
-            {
-                return NotFound();
-            }
+            Response.AddPaginationHeader(users);
 
             return Ok(users);
         }
+
+        ////[HttpGet]   //// http://localhost:5000/api/user
+        ////public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        ////{
+        ////    var users = await _userRepository.GetMembersAsync();
+
+        ////    if (users is null || !users.Any())
+        ////    {
+        ////        return NotFound();
+        ////    }
+
+        ////    return Ok(users);
+        ////}
 
         [HttpGet("{userName}")]   //// http://localhost:5000/api/user/{userName}
         public async Task<ActionResult<MemberDto>> GetUser(string userName)
