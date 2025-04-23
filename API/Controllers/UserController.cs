@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     ////[Authorize]
     [Route("api/[controller]")]     //// http://localhost:5000/api/user
     [ApiController]
