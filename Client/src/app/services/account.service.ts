@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { User } from '../models/user';
 import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { LikeService } from './like.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class AccountService {
   baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null);
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private likeService: LikeService) {}
 
   login(model: any) {
     return this.httpClient
@@ -20,8 +21,9 @@ export class AccountService {
       .pipe(
         map((user) => {
           if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUser.set(user);
+            this.setCurrentUser(user);
+            // localStorage.setItem('user', JSON.stringify(user));
+            // this.currentUser.set(user);
           }
         })
       );
@@ -33,8 +35,9 @@ export class AccountService {
       .pipe(
         map((user) => {
           if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUser.set(user);
+            this.setCurrentUser(user);
+            // localStorage.setItem('user', JSON.stringify(user));
+            // this.currentUser.set(user);
           }
           return user;
         })
@@ -48,5 +51,11 @@ export class AccountService {
 
   isLoggedIn() {
     return this.currentUser() !== null;
-  }  
+  }
+
+  setCurrentUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUser.set(user);
+    this.likeService.getLikeIds();
+  }
 }

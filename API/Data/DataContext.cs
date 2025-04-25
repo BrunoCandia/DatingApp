@@ -22,7 +22,7 @@ namespace API.Data
         }
 
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<UserLike> UserLikes { get; set; }
         ////public DbSet<Message> Messages { get; set; }
-        ////public DbSet<UserLike> UserLikes { get; set; }
     }
 }

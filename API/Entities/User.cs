@@ -32,9 +32,9 @@ namespace API.Entities
 
         public List<Photo> Photos { get; set; } = new List<Photo>();
 
-        ////public List<UserLike> LikedByUsers { get; set; } = new List<UserLike>();
+        public List<UserLike> LikedByUsers { get; set; } = new List<UserLike>();
 
-        ////public List<UserLike> LikedUsers { get; set; } = new List<UserLike>();
+        public List<UserLike> LikedUsers { get; set; } = new List<UserLike>();
 
         ////public List<Message> MessagesSent { get; set; } = new List<Message>();
 
@@ -62,6 +62,25 @@ namespace API.Entities
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+
+            // This configuration was done in the UserLikeConfiguration class.
+            ////// Configure the many-to-many relationship for LikedByUsers and LikedUsers.
+
+            ////// 1.   LikedByUsers Configuration:
+            //////  Configures the relationship where a User is the target of likes(TargetUser in UserLike).
+            //////  Sets the foreign key as TargetUserId.
+            ////builder.HasMany(u => u.LikedByUsers)
+            ////    .WithOne(ul => ul.TargetUser)
+            ////    .HasForeignKey(ul => ul.TargetUserId)
+            ////    .OnDelete(DeleteBehavior.Cascade);
+
+            ////// 2.   LikedUsers Configuration:
+            //////  Configures the relationship where a User is the source of likes(SourceUser in UserLike).
+            //////  Sets the foreign key as SourceUserId.
+            ////builder.HasMany(u => u.LikedUsers)
+            ////    .WithOne(ul => ul.SourceUser)
+            ////    .HasForeignKey(ul => ul.SourceUserId)
+            ////    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
