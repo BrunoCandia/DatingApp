@@ -36,9 +36,9 @@ namespace API.Entities
 
         public List<UserLike> LikedUsers { get; set; } = new List<UserLike>();
 
-        ////public List<Message> MessagesSent { get; set; } = new List<Message>();
+        public List<Message> MessagesSent { get; set; } = new List<Message>();
 
-        ////public List<Message> MessagesReceived { get; set; } = new List<Message>();
+        public List<Message> MessagesReceived { get; set; } = new List<Message>();
 
         // Navigation properties
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

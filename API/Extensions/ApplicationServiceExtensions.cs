@@ -17,6 +17,7 @@ namespace API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikeUserRepository, LikeUserRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             services.AddOpenApi();
