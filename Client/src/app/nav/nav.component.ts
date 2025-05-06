@@ -5,10 +5,11 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TitleCasePipe } from '@angular/common';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive, TitleCasePipe],
+  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive, TitleCasePipe, HasRoleDirective],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css',
 })

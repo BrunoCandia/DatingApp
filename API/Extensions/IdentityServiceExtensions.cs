@@ -37,6 +37,10 @@ namespace API.Extensions
             // When a user is authenticated via a JWT, the claims embedded in the token are extracted and used to create a ClaimsPrincipal.
             // This ClaimsPrincipal represents the authenticated user and is accessible throughout the application.
 
+            services.AddAuthorizationBuilder()
+                .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
+                .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin, Moderator"));
+
             return services;
         }
     }

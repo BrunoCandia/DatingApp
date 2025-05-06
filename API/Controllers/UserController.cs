@@ -2,13 +2,14 @@
 using API.Extensions;
 using API.Helpers;
 using API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
-    ////[Authorize]
+    [Authorize]
     [Route("api/[controller]")]     //// http://localhost:5000/api/user
     [ApiController]
     public class UserController : ControllerBase
@@ -20,6 +21,7 @@ namespace API.Controllers
             _userRepository = userRepository;
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpGet]   //// http://localhost:5000/api/user
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
@@ -45,6 +47,7 @@ namespace API.Controllers
         ////    return Ok(users);
         ////}
 
+        //[Authorize(Roles = "Member")]
         [HttpGet("{userName}")]   //// http://localhost:5000/api/user/{userName}
         public async Task<ActionResult<MemberDto>> GetUser(string userName)
         {
