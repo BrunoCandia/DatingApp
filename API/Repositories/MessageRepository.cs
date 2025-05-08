@@ -153,7 +153,7 @@ namespace API.Repositories
             {
                 // Saving data in a get request is a bad practice!!!
                 unReadMessages.ForEach(x => x.DateRead = DateTimeOffset.UtcNow);
-                await _dataContext.SaveChangesAsync();
+                ////await _dataContext.SaveChangesAsync();
             }
 
             List<MessageDto> resultMessages = messages.Select(x => new MessageDto
@@ -176,11 +176,6 @@ namespace API.Repositories
         public void RemoveConnection(Connection connection)
         {
             _dataContext.Connections.Remove(connection);
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _dataContext.SaveChangesAsync() > 0;
         }
     }
 }

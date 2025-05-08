@@ -9,7 +9,6 @@ namespace API.Repositories
         Task<User?> GetUserByIdAsync(Guid id);
         Task<User?> GetUserByUsernameAsync(string username);
         Task<IEnumerable<User>> GetUsersAsync();
-        Task<bool> SaveAllAsync();
         void Update(User user);
 
         Task<MemberDto?> GetMemberByUsernameAsync(string username);

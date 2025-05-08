@@ -12,6 +12,5 @@ namespace API.Repositories
         Task<IEnumerable<Guid>> GetCurrentUserLikesIdsAsync(Guid currentUserId);
         void DeleteUserLike(UserLike userLike);
         Task AddUserLikeAsync(UserLike userLike);
-        Task<bool> SaveAllAsync();
     }
 }

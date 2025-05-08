@@ -225,10 +225,5 @@ namespace API.Repositories
                     }
             }
         }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _dataContext.SaveChangesAsync() > 0;
-        }
     }
 }

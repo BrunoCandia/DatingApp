@@ -12,13 +12,11 @@ namespace API.Controllers
     [ApiController]
     public class UserLikeController : ControllerBase
     {
-        private readonly ILikeUserRepository _likeUserRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserLikeController(ILikeUserRepository likeUserRepository, IUserRepository userRepository)
+        public UserLikeController(IUnitOfWork unitOfWork)
         {
-            _likeUserRepository = likeUserRepository;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("{targetUserId:Guid}")]
@@ -28,7 +26,7 @@ namespace API.Controllers
 
             if (sourceUserId == targetUserId) return BadRequest("You cannot like yourself");
 
-            var existingUserLike = await _likeUserRepository.GetUserLikeAsync(sourceUserId, targetUserId);
+            var existingUserLike = await _unitOfWork.LikeUserRepository.GetUserLikeAsync(sourceUserId, targetUserId);
 
             if (existingUserLike is null)
             {
@@ -36,18 +34,18 @@ namespace API.Controllers
                 {
                     SourceUserId = sourceUserId,
                     TargetUserId = targetUserId,
-                    SourceUser = await _userRepository.GetUserByIdAsync(sourceUserId) ?? throw new ArgumentException("sourceUserId not found"),  // Maybe required can be removed
-                    TargetUser = await _userRepository.GetUserByIdAsync(targetUserId) ?? throw new ArgumentException("targetUserId not found")  // Maybe required can be removed
+                    SourceUser = await _unitOfWork.UserRepository.GetUserByIdAsync(sourceUserId) ?? throw new ArgumentException("sourceUserId not found"),  // Maybe required can be removed
+                    TargetUser = await _unitOfWork.UserRepository.GetUserByIdAsync(targetUserId) ?? throw new ArgumentException("targetUserId not found")  // Maybe required can be removed
                 };
 
-                await _likeUserRepository.AddUserLikeAsync(userLike);
+                await _unitOfWork.LikeUserRepository.AddUserLikeAsync(userLike);
             }
             else
             {
-                _likeUserRepository.DeleteUserLike(existingUserLike);
+                _unitOfWork.LikeUserRepository.DeleteUserLike(existingUserLike);
             }
 
-            if (await _likeUserRepository.SaveAllAsync())
+            if (await _unitOfWork.CompleteAsync())
             {
                 return Ok();
             }
@@ -61,7 +59,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<Guid>>> GetCurrentUserLikeIds()
         {
             var userId = User.GetUserId();
-            var userLikeIds = await _likeUserRepository.GetCurrentUserLikesIdsAsync(userId);
+            var userLikeIds = await _unitOfWork.LikeUserRepository.GetCurrentUserLikesIdsAsync(userId);
             return Ok(userLikeIds);
         }
 
@@ -70,7 +68,7 @@ namespace API.Controllers
         {
             likeParams.UserId = User.GetUserId();
 
-            var userLikes = await _likeUserRepository.GetUserLikesAsync(likeParams);
+            var userLikes = await _unitOfWork.LikeUserRepository.GetUserLikesAsync(likeParams);
 
             Response.AddPaginationHeader(userLikes);
 

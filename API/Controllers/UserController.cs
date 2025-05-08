@@ -14,11 +14,11 @@ namespace API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         //[Authorize(Roles = "Admin")]
@@ -27,7 +27,7 @@ namespace API.Controllers
         {
             userParams.CurrentUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var users = await _userRepository.GetMembersAsync(userParams);
+            var users = await _unitOfWork.UserRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(users);
 
@@ -51,7 +51,7 @@ namespace API.Controllers
         [HttpGet("{userName}")]   //// http://localhost:5000/api/user/{userName}
         public async Task<ActionResult<MemberDto>> GetUser(string userName)
         {
-            var user = await _userRepository.GetMemberByUsernameAsync(userName);
+            var user = await _unitOfWork.UserRepository.GetMemberByUsernameAsync(userName);
 
             if (user is null)
             {
@@ -71,7 +71,7 @@ namespace API.Controllers
                 return BadRequest("User Name not found in token");
             }
 
-            var user = await _userRepository.GetUserByUsernameAsync(userName);
+            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(userName);
 
             if (user is null)
             {
@@ -86,7 +86,7 @@ namespace API.Controllers
 
             ////_userRepository.Update(user);
 
-            if (await _userRepository.SaveAllAsync())
+            if (await _unitOfWork.CompleteAsync())
             {
                 return NoContent();
             }

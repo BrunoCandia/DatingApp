@@ -12,7 +12,6 @@ namespace API.Repositories
         Task<Message?> GetMessageByIdAsync(Guid messageId);
         Task<PagedList<MessageDto>> GetMessagesAsync(MessageParams messageParams);
         Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName);
-        Task<bool> SaveAllAsync();
 
         Task AddGroupAsync(Group group);
         void RemoveConnection(Connection connection);
