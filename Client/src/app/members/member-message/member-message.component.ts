@@ -1,4 +1,4 @@
-import { Component, computed, input, OnInit, output, signal, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, computed, input, OnInit, output, signal, ViewChild } from '@angular/core';
 import { Message } from '../../models/message';
 import { MessageService } from '../../services/message.service';
 import { TimeagoModule } from 'ngx-timeago';
@@ -10,8 +10,9 @@ import { FormsModule, NgForm } from '@angular/forms';
   templateUrl: './member-message.component.html',
   styleUrl: './member-message.component.css'
 })
-export class MemberMessageComponent implements OnInit {
+export class MemberMessageComponent implements OnInit, AfterViewChecked {
   @ViewChild('messageForm') messageForm?: NgForm;
+  @ViewChild('scrollMe') scrollContainer: any; 
 
   userName = input.required<string>();
   // messages = input.required<Message[]>();
@@ -24,6 +25,16 @@ export class MemberMessageComponent implements OnInit {
   messages = computed<Message[]>(() => this.messageService.messageThread());
 
   constructor(private messageService: MessageService) {}
+  
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom() {
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    }
+  }
 
   ngOnInit(): void {
     //Back-end call moved to member-detail.component, so the call is executed of the Message tab is activated
@@ -44,7 +55,7 @@ export class MemberMessageComponent implements OnInit {
   sendMessage() {
     //With SignalR
     this.messageService.sendMessageWhitSignalR(this.userName(), this.messageContent)
-    .then(() => { this.messageForm?.reset();})
+    .then(() => { this.messageForm?.reset(); this.scrollToBottom();})
     .catch((error) => {console.log(error)});
 
     //With Http
