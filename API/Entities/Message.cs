@@ -25,6 +25,9 @@ namespace API.Entities
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
+            builder.HasKey(e => e.MessageId);
+            builder.Property(e => e.MessageId).HasDefaultValueSql("NEWSEQUENTIALID()");
+
             builder.Property(p => p.SenderUserName).HasMaxLength(128);
             builder.Property(p => p.RecipientUserName).HasMaxLength(128);
             builder.Property(p => p.Content).HasMaxLength(3000);

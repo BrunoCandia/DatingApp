@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, ViewChild } from '@angular/core';
+import { Component, computed, input, OnInit, output, signal, ViewChild } from '@angular/core';
 import { Message } from '../../models/message';
 import { MessageService } from '../../services/message.service';
 import { TimeagoModule } from 'ngx-timeago';
@@ -14,17 +14,22 @@ export class MemberMessageComponent implements OnInit {
   @ViewChild('messageForm') messageForm?: NgForm;
 
   userName = input.required<string>();
-  messages = input.required<Message[]>();
-  updateMessages = output<Message>();
+  // messages = input.required<Message[]>();
+  // updateMessages = output<Message>();
   messageContent = '';
 
   //messages: Message[] = [];
+
+  //messages = signal<Message[]>([]);
+  messages = computed<Message[]>(() => this.messageService.messageThread());
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
     //Back-end call moved to member-detail.component, so the call is executed of the Message tab is activated
     //this.loadMessages();
+    
+    //this.messages.set(this.messageService.messageThread());
   }
 
   // loadMessages() {
@@ -37,14 +42,20 @@ export class MemberMessageComponent implements OnInit {
   // }
 
   sendMessage() {
-    this.messageService.sendMessage(this.userName(), this.messageContent).subscribe({
-      next: (message) => {
-        this.updateMessages.emit(message);
-        this.messageForm?.reset();
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
+    //With SignalR
+    this.messageService.sendMessageWhitSignalR(this.userName(), this.messageContent)
+    .then(() => { this.messageForm?.reset();})
+    .catch((error) => {console.log(error)});
+
+    //With Http
+    // this.messageService.sendMessage(this.userName(), this.messageContent).subscribe({
+    //   next: (message) => {
+    //     //this.updateMessages.emit(message);
+    //     this.messageForm?.reset();
+    //   },
+    //   error: (error) => {
+    //     console.log(error);
+    //   }
+    // });
   }
 }

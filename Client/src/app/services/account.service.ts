@@ -4,6 +4,7 @@ import { User } from '../models/user';
 import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LikeService } from './like.service';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class AccountService {
     return [];
   });
 
-  constructor(private httpClient: HttpClient, private likeService: LikeService) {}
+  constructor(private httpClient: HttpClient, private likeService: LikeService, private presenceService: PresenceService) {}
 
   login(model: any) {
     return this.httpClient
@@ -56,6 +57,7 @@ export class AccountService {
   logout() {
     localStorage.removeItem('user');
     this.currentUser.set(null);
+    this.presenceService.stopHubConnection();
   }
 
   isLoggedIn() {
@@ -66,5 +68,6 @@ export class AccountService {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
     this.likeService.getLikeIds();
+    this.presenceService.createHubConnection(user)
   }
 }

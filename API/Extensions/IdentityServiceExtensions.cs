@@ -32,6 +32,22 @@ namespace API.Extensions
                         ValidateIssuer = false,
                         IssuerSigningKey = key
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.HttpContext.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrWhiteSpace(accessToken) && path.StartsWithSegments("/hubs"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             // When a user is authenticated via a JWT, the claims embedded in the token are extracted and used to create a ClaimsPrincipal.

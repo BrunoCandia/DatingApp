@@ -16,6 +16,16 @@ namespace API.Repositories
             _dataContext = dataContext;
         }
 
+        public void AttachGroup(Group group)
+        {
+            _dataContext.Groups.Attach(group);
+        }
+
+        public async Task AddGroupAsync(Group group)
+        {
+            await _dataContext.Groups.AddAsync(group);
+        }
+
         public async Task<MessageDto> AddMessageAsync(Message message)
         {
             EntityEntry<Message> messageEntityEntry = await _dataContext.Messages.AddAsync(message);
@@ -44,9 +54,55 @@ namespace API.Repositories
             _dataContext.Messages.Remove(message);
         }
 
+        public async Task<ConnectionDto?> GetConnectionAsync(string connectionId)
+        {
+            var connectionEnity = await _dataContext.Connections.FindAsync(connectionId);
+
+            if (connectionEnity is not null)
+            {
+                return new ConnectionDto { ConnectionId = connectionEnity.ConnectionId, UserName = connectionEnity.UserName };
+            }
+
+            return null;
+        }
+
+        public async Task<GroupDto?> GetGroupForConnectionAsync(string connecationId)
+        {
+            return await _dataContext.Groups
+                .Include(x => x.Connections)
+                .Where(x => x.Connections.Any(c => c.ConnectionId == connecationId))
+                .Select(x => new GroupDto
+                {
+                    Name = x.Name,
+                    Connections = x.Connections.Select(x => new ConnectionDto
+                    {
+                        ConnectionId = x.ConnectionId,
+                        UserName = x.UserName,
+                    }).ToList(),
+                })
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Message?> GetMessageByIdAsync(Guid messageId)
         {
             return await _dataContext.Messages.FindAsync(messageId);
+        }
+
+        public async Task<GroupDto?> GetMessageGroupAsync(string groupName)
+        {
+            return await _dataContext.Groups
+                .Include(x => x.Connections)
+                .Where(x => x.Name == groupName)
+                .Select(x => new GroupDto
+                {
+                    Name = x.Name,
+                    Connections = x.Connections.Select(x => new ConnectionDto
+                    {
+                        ConnectionId = x.ConnectionId,
+                        UserName = x.UserName,
+                    }).ToList(),
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesAsync(MessageParams messageParams)
@@ -115,6 +171,11 @@ namespace API.Repositories
             }).ToList();
 
             return resultMessages;
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            _dataContext.Connections.Remove(connection);
         }
 
         public async Task<bool> SaveAllAsync()
