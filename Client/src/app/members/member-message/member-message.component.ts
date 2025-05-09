@@ -19,10 +19,10 @@ export class MemberMessageComponent implements OnInit, AfterViewChecked {
   // updateMessages = output<Message>();
   messageContent = '';
 
-  //messages: Message[] = [];
-
-  //messages = signal<Message[]>([]);
+  //messages: Message[] = [];  
   messages = computed<Message[]>(() => this.messageService.messageThread());
+
+  loading = false;
 
   constructor(private messageService: MessageService) {}
   
@@ -53,10 +53,13 @@ export class MemberMessageComponent implements OnInit, AfterViewChecked {
   // }
 
   sendMessage() {
+    this.loading = true;
+
     //With SignalR
     this.messageService.sendMessageWhitSignalR(this.userName(), this.messageContent)
     .then(() => { this.messageForm?.reset(); this.scrollToBottom();})
-    .catch((error) => {console.log(error)});
+    .catch((error) => {console.log(error)})
+    .finally(() => this.loading = false);
 
     //With Http
     // this.messageService.sendMessage(this.userName(), this.messageContent).subscribe({

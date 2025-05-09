@@ -11,6 +11,7 @@ import { MessageParams } from '../models/messageParams';
 import { PaginatedResult } from '../models/paginatedResult';
 import { User } from '../models/user';
 import { Group } from '../models/group';
+import { BusyService } from './busy.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class MessageService {
 
   messageThread = signal<Message[]>([]);
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private busyService: BusyService) {}
 
   getMessages(messageParams: MessageParams) {
     let params = this.setPaginationHeader(
@@ -77,6 +78,8 @@ export class MessageService {
   }
 
   createHubConnection(user: User, otherUserName: string) {
+    this.busyService.busy();
+    
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'message?user=' + otherUserName, {
         accessTokenFactory: () => user.token,
@@ -84,7 +87,9 @@ export class MessageService {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start().catch((error) => console.log(error));
+    this.hubConnection.start()
+      .catch((error) => console.log(error))
+      .finally(() => this.busyService.idle());
 
     // this.hubConnection.start()
     //   .then(() => console.log("Connected to the message hub"))
