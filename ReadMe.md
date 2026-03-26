@@ -1,5 +1,7 @@
 API
 
+To start a local API development server, select the API project and run from Visual Studio
+
 For manual deployment to azure add to the WebApp the following Environment variables:
 
 In App settings
@@ -18,3 +20,9 @@ nvm list -> 22.14.0
 
 angular version
 ng --version -> 19.2.6
+
+To start a local client development server, run:
+
+```bash
+ng serve
+```
